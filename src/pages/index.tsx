@@ -15,8 +15,6 @@ const Home: NextPage = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  console.log(friends);
-
   return (
     <>
       <Head>
