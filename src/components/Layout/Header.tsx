@@ -3,7 +3,7 @@ import { CgAddR } from "react-icons/cg";
 
 export default function Header() {
   return (
-    <div className="flex h-11 w-full items-center justify-between px-4">
+    <div className="flex h-[60px] w-full items-center justify-between px-4">
       <Image
         src="/Instagram-large.svg"
         width={200}

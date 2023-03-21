@@ -1,5 +1,5 @@
-import Header from "~/Layout/Header";
-import Navbar from "~/Layout/Navbar";
+import Header from "~/components/Layout/Header";
+import Navbar from "~/components/Layout/Navbar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
