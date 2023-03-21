@@ -7,3 +7,9 @@
     @apply bg-zinc-800 text-white;
   }
 }
+
+@layer components {
+  .gradient-border {
+    @apply relative z-10 p-[2px] before:absolute before:inset-0 before:z-[-1] before:rounded-full before:bg-gradient-to-r before:from-pink-500 before:via-red-500 before:to-yellow-500;
+  }
+}
