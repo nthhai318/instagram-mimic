@@ -12,9 +12,9 @@ const Home: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+      <div className="flex flex-1 flex-col items-center justify-center">
         <div className="h-20 w-[calc(40vw+100px)] bg-red-900"></div>
-      </main>
+      </div>
     </>
   );
 };
