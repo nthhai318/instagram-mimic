@@ -1,5 +1,6 @@
 import { type FakePost } from "~/fake-data/Insta-posts";
 import Image from "next/image";
+import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 
 export default function Post({ post }: { post: FakePost }) {
   return (
@@ -18,7 +19,7 @@ export default function Post({ post }: { post: FakePost }) {
         <p className="text-sm font-thin">{post.timestamp}</p>
       </div>
       {/* Image */}
-      <div>
+      <div className="">
         <Image
           src={post.image}
           width={1000}
@@ -28,7 +29,11 @@ export default function Post({ post }: { post: FakePost }) {
         />
       </div>
       {/* Utilities: Likes/Comment/Share */}
-      <div></div>
+      <div className="my-2 flex items-center gap-6">
+        <FaRegHeart size={24} />
+        <FaHeart size={24} />
+        <FaRegComment size={24} />
+      </div>
       {/* Number of Likes */}
       <div></div>
       {/* Content */}
