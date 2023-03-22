@@ -1,3 +1,4 @@
+import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { type IconType } from "react-icons";
 import { AiFillHome, AiOutlineSearch } from "react-icons/ai";
@@ -8,7 +9,7 @@ import { AiFillHome, AiOutlineSearch } from "react-icons/ai";
 export default function Navbar() {
   return (
     <div className="h-14 w-full  md:h-full md:w-[72px] xl:w-56 ">
-      <div className="fixed left-0 bottom-0 z-50 h-14 w-full bg-zinc-900/20 p-1 md:h-full md:w-[72px] xl:w-56 xl:p-4">
+      <div className="fixed left-0 bottom-0 z-10 h-14 w-full bg-zinc-900/20 p-1 md:h-full md:w-[72px] xl:w-56 xl:p-4">
         {/* LOGO */}
         <div className="hidden h-24 items-center justify-center md:flex ">
           <Image
@@ -43,6 +44,12 @@ export default function Navbar() {
           </li> */}
 
           <UserProfile />
+          <button
+            className="h-[48px] w-fit rounded-full p-1 text-center text-[1.25rem] duration-75 hover:bg-zinc-700/50 hover:duration-100 xl:w-full"
+            onClick={() => void signIn("github")}
+          >
+            <p>Sign In</p>
+          </button>
         </div>
       </div>
     </div>

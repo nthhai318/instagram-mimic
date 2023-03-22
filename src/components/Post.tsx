@@ -2,13 +2,12 @@ import { type FakePost } from "~/fake-data/Insta-posts";
 import Image from "next/image";
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { useState } from "react";
-import CommentInput from "./CommentInput";
 
 export default function Post({ post }: { post: FakePost }) {
   const [likes, setLikes] = useState([]);
   const [comments, setComments] = useState([]);
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex w-full flex-col ">
       {/* User Info */}
       <div className="flex items-center gap-2 p-2">
         <Image
