@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import Feed from "~/components/Feed";
 import Friends, { type FakeFriends } from "~/components/Friends";
+import PostInput from "~/components/PostInput";
 import Suggestions from "~/components/Suggestions";
 import { type FakePost } from "~/fake-data/Insta-posts";
 
@@ -37,6 +38,7 @@ const Home: NextPage = () => {
       <div className="flex flex-1 items-start justify-center gap-16 overflow-x-hidden">
         <div className="flex w-full max-w-[630px] flex-col items-center justify-start">
           {friends && <Friends friends={friends} />}
+          <PostInput />
           {posts && <Feed posts={posts} />}
         </div>
         <div className="hidden w-[319px] lg:flex">

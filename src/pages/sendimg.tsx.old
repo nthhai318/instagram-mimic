@@ -4,18 +4,26 @@ import { createClient } from "@supabase/supabase-js";
 import Image from "next/image";
 import { nanoid } from "nanoid";
 
-const supabase = createClient("111", "222");
+const supabase = createClient();
+
+const prepareBase64DataUrl = (base64: string) => base64.replace(/^.+,/, "");
 
 export default function Sendimg() {
-  const [img, setImg] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+  const [img, setImg] = useState<string | null>("");
+  // const [preview, setPreview] = useState<string | null>(null);
   const [filePath, setFilePath] = useState<string | null>(null);
 
   const uploadImg = async () => {
     if (img) {
       const { data, error } = await supabase.storage
         .from("test")
-        .upload(`${nanoid()}`, img);
+        .upload(
+          `${nanoid()}`,
+          Buffer.from(prepareBase64DataUrl(img), "base64"),
+          {
+            upsert: true,
+          }
+        );
       if (error) {
         console.log(error);
         return;
@@ -30,14 +38,15 @@ export default function Sendimg() {
     let file: File | undefined;
     if (e.target.files) {
       file = e.target.files[0];
+      console.log(file);
     }
     if (file) {
-      setImg(file);
+      // setImg(file);
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = (readerEvent) => {
         if (typeof readerEvent.target?.result == "string") {
-          setPreview(readerEvent.target.result);
+          setImg(readerEvent.target.result);
         }
       };
     }
@@ -54,11 +63,11 @@ export default function Sendimg() {
         >
           Send File to DB storage
         </button>
-        {preview && (
+        {img && (
           <div>
             <p>Preview: </p>
             <Image
-              src={preview}
+              src={img}
               width={100}
               height={100}
               className="h-auto w-52"

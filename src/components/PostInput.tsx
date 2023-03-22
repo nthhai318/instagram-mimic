@@ -7,9 +7,8 @@ import { api } from "~/utils/api";
 export default function PostInput() {
   const router = useRouter();
   const ref = useRef<HTMLInputElement>(null);
-  const [img, setImg] = useState<File | null>(null);
+  const [img, setImg] = useState<string | null>(null);
   const [input, setInput] = useState<string | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
 
   const sendPost = () => {
     if (!img) {
@@ -24,9 +23,8 @@ export default function PostInput() {
       image: img,
       content: input,
     });
-    setPreview(null);
     setImg(null);
-    setInput("");
+    setInput(null);
   };
 
   const createPost = api.post.create.useMutation();
@@ -37,12 +35,11 @@ export default function PostInput() {
       file = e.target.files[0];
     }
     if (file) {
-      setImg(file);
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = (readerEvent) => {
         if (typeof readerEvent.target?.result == "string") {
-          setPreview(readerEvent.target.result);
+          setImg(readerEvent.target.result);
         }
       };
     }
@@ -65,10 +62,10 @@ export default function PostInput() {
             ref={ref}
             accept="image/png, image/gif, image/jpeg, image/webp"
           />
-          {preview ? (
+          {img ? (
             <>
               <Image
-                src={preview}
+                src={img}
                 width={1000}
                 height={1000}
                 alt="preview"
@@ -83,7 +80,6 @@ export default function PostInput() {
                 onClick={(e) => {
                   e.stopPropagation();
                   setImg(null);
-                  setPreview(null);
                 }}
               >
                 <AiOutlineClose size={24} />
@@ -121,7 +117,7 @@ export default function PostInput() {
           </div>
           <div className="flex justify-center">
             <button
-              className="mx-auto w-fit rounded-lg bg-blue-700 p-2 px-5 hover:brightness-90"
+              className="w-fit rounded-lg bg-blue-700 p-2 px-5 hover:brightness-90"
               onClick={sendPost}
             >
               Share

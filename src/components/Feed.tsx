@@ -10,9 +10,9 @@ export default function Feed({ posts }: { posts: FakePost[] }) {
           <Post key={post.id} post={post} />
         ))}
       </div>
-      <div className="fixed inset-0 z-20 flex w-full items-center justify-center">
+      {/* <div className="fixed inset-0 z-20 flex w-full items-center justify-center">
         <PostInput />
-      </div>
+      </div> */}
     </div>
   );
 }

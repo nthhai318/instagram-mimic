@@ -9,12 +9,17 @@ import {
 
 import { supabase } from "lib/supabaseClient";
 
+const prepareBase64DataUrl = (base64: string) =>
+  base64
+    .replace("data:image/webp;", "data:image/webp;charset=UTF-8;")
+    .replace(/^.+,/, "");
+
 export const PostRouter = createTRPCRouter({
   create: protectedProcedure
-  .input(z.object({content: z.string(), image: z.instanceof(File)}))
+  .input(z.object({content: z.string(), image: z.string()}))
   .mutation(async ({input, ctx}) => {
 
-    const {data, error} = await supabase.storage.from("instagram-mimic").upload(`public/${ctx.session.user.id}/${nanoid(10)}`, input.image)
+    const {data, error} = await supabase.storage.from("instagram-mimic").upload(`public/${ctx.session.user.id}/${nanoid(10)}`, Buffer.from(prepareBase64DataUrl(input.image), "base64"))
 
     if (error) { console.log("upload image failed: ", error )}
     let imgUrl = "";
