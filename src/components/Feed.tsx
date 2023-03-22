@@ -1,5 +1,6 @@
 import { type FakePost } from "~/fake-data/Insta-posts";
 import Post from "./Post";
+import PostInput from "./PostInput";
 
 export default function Feed({ posts }: { posts: FakePost[] }) {
   return (
@@ -8,6 +9,9 @@ export default function Feed({ posts }: { posts: FakePost[] }) {
         {posts.map((post) => (
           <Post key={post.id} post={post} />
         ))}
+      </div>
+      <div className="absolute">
+        <PostInput />
       </div>
     </div>
   );

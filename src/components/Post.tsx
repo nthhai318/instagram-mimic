@@ -1,8 +1,12 @@
 import { type FakePost } from "~/fake-data/Insta-posts";
 import Image from "next/image";
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
+import { useState } from "react";
+import CommentInput from "./CommentInput";
 
 export default function Post({ post }: { post: FakePost }) {
+  const [likes, setLikes] = useState([]);
+  const [comments, setComments] = useState([]);
   return (
     <div className="flex w-full flex-col">
       {/* User Info */}
@@ -16,7 +20,7 @@ export default function Post({ post }: { post: FakePost }) {
         />
         <p className="font-bold">{post.name}</p>
         <span>•</span>
-        <p className="text-sm font-thin">{post.timestamp}</p>
+        <p className="text-sm font-thin">{post.createdAt}</p>
       </div>
       {/* Image */}
       <div className="">
@@ -35,13 +39,26 @@ export default function Post({ post }: { post: FakePost }) {
         <FaRegComment size={24} />
       </div>
       {/* Number of Likes */}
-      <div></div>
+      <div>
+        <p>
+          {likes.length} {likes.length <= 1 ? "like" : "likes"}
+        </p>
+      </div>
       {/* Content */}
-      <div></div>
+      <div className="text-justify">
+        <span className="font-bold">{post.name} </span>
+        <span className="text-sm">{post.content}</span>
+      </div>
       {/* Comments */}
-      <div></div>
-      {/* Add a Comment */}
-      <div></div>
+      <div>
+        {comments.length > 0 && (
+          <button>
+            Show {comments.length}{" "}
+            {comments.length > 1 ? "comments" : "comment"}
+          </button>
+        )}
+        {comments.length == 0 && <div>Comment</div>}
+      </div>
     </div>
   );
 }

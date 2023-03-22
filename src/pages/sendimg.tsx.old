@@ -1,0 +1,85 @@
+import { type ChangeEvent, useState } from "react";
+
+import { createClient } from "@supabase/supabase-js";
+import Image from "next/image";
+import { nanoid } from "nanoid";
+
+const supabase = createClient("111", "222");
+
+export default function Sendimg() {
+  const [img, setImg] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [filePath, setFilePath] = useState<string | null>(null);
+
+  const uploadImg = async () => {
+    if (img) {
+      const { data, error } = await supabase.storage
+        .from("test")
+        .upload(`${nanoid()}`, img);
+      if (error) {
+        console.log(error);
+        return;
+      } else {
+        const imgURL = supabase.storage.from("test").getPublicUrl(data.path);
+        setFilePath(imgURL.data.publicUrl);
+      }
+    }
+  };
+
+  const addImageToState = (e: ChangeEvent<HTMLInputElement>) => {
+    let file: File | undefined;
+    if (e.target.files) {
+      file = e.target.files[0];
+    }
+    if (file) {
+      setImg(file);
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (readerEvent) => {
+        if (typeof readerEvent.target?.result == "string") {
+          setPreview(readerEvent.target.result);
+        }
+      };
+    }
+  };
+
+  return (
+    <div>
+      <div className="flex flex-col gap-3">
+        <h1>Testing</h1>
+        <input type="file" onChange={addImageToState} />
+        <button
+          className="rounded-lg bg-blue-700 p-1"
+          onClick={() => void uploadImg()}
+        >
+          Send File to DB storage
+        </button>
+        {preview && (
+          <div>
+            <p>Preview: </p>
+            <Image
+              src={preview}
+              width={100}
+              height={100}
+              className="h-auto w-52"
+              alt="test"
+            />
+          </div>
+        )}
+        {filePath && (
+          <div>
+            <p>Fetch file from Supabase</p>
+            <Image
+              src={filePath}
+              width={100}
+              height={100}
+              className="h-auto w-52"
+              alt="test"
+            />
+          </div>
+        )}
+        <p>File path: {filePath}</p>
+      </div>
+    </div>
+  );
+}

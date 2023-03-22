@@ -11,13 +11,17 @@ import { supabase } from "lib/supabaseClient";
 
 export const PostRouter = createTRPCRouter({
   create: protectedProcedure
-  .input(z.object({content: z.string(), image: z.string()}))
+  .input(z.object({content: z.string(), image: z.instanceof(File)}))
   .mutation(async ({input, ctx}) => {
 
     const {data, error} = await supabase.storage.from("instagram-mimic").upload(`public/${ctx.session.user.id}/${nanoid(10)}`, input.image)
 
-    if (error) { throw new Error("upload image failed")}
-
+    if (error) { console.log("upload image failed: ", error )}
+    let imgUrl = "";
+    if (data) {      
+      const Url = supabase.storage.from("instagram-mimic").getPublicUrl(data.path);
+      imgUrl = Url.data.publicUrl;
+    }
 
     return ctx.prisma.post.create({
       data: {
@@ -25,9 +29,10 @@ export const PostRouter = createTRPCRouter({
         userId: ctx.session.user.id,
         userImg: ctx.session.user.image || "/default-avatar.webp",
         content: input.content,
-        image: data.path,
+        image: imgUrl,
       }
     })
+
   }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {
