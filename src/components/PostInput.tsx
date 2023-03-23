@@ -6,6 +6,15 @@ import Modal from "./Modal";
 import { PostInputContext } from "./PostInputContext";
 import { useSession } from "next-auth/react";
 import { type QueryObserverResult } from "@tanstack/react-query";
+import { nanoid } from "nanoid";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+  `${process.env.NEXT_PUBLIC_SUPABASE_URL}`,
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+  `${process.env.NEXT_PUBLIC_SUPABASE_API_KEY}`
+);
 
 export default function PostInput({
   postsrefetch,
@@ -14,12 +23,13 @@ export default function PostInput({
 }) {
   const { data: sessionData } = useSession();
   const ref = useRef<HTMLInputElement>(null);
-  const [img, setImg] = useState<string | null>(null);
+  const [img, setImg] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [input, setInput] = useState<string | null>(null);
   const [finishPost, setFinishPost] = useState(false);
   const { postModalOpen, setPostModalOpen } = useContext(PostInputContext);
 
-  const sendPost = () => {
+  const sendPost = async () => {
     if (!img) {
       alert("Cannot post with empty image");
       return;
@@ -28,12 +38,26 @@ export default function PostInput({
       alert("Cannot post with empty caption");
       return;
     }
-    createPost.mutate({
-      image: img,
-      content: input,
-    });
-    setImg(null);
-    setInput(null);
+
+    const { data, error } = await supabase.storage
+      .from("instagram-mimic")
+      .upload(`posts/${sessionData?.user.id || "anon"}/${nanoid()}`, img);
+
+    if (error) {
+      alert("Uploaded failed, please try again");
+      console.log(error);
+      throw new Error("Cannot upload image");
+    } else {
+      const { data: getURL } = supabase.storage
+        .from("instagram-mimic")
+        .getPublicUrl(data.path);
+      createPost.mutate({
+        image: getURL.publicUrl,
+        content: input,
+      });
+      setImg(null);
+      setInput(null);
+    }
   };
 
   // TODO: change router.reload to refetch post on main page
@@ -54,11 +78,12 @@ export default function PostInput({
       file = e.target.files[0];
     }
     if (file) {
+      setImg(file);
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = (readerEvent) => {
         if (typeof readerEvent.target?.result == "string") {
-          setImg(readerEvent.target.result);
+          setPreview(readerEvent.target.result);
         }
       };
     }
@@ -85,10 +110,10 @@ export default function PostInput({
                     ref={ref}
                     accept="image/png, image/gif, image/jpeg, image/webp"
                   />
-                  {img ? (
+                  {img && preview ? (
                     <>
                       <Image
-                        src={img}
+                        src={preview}
                         width={1000}
                         height={1000}
                         alt="preview"
@@ -142,7 +167,7 @@ export default function PostInput({
                     <div className="flex justify-center">
                       <button
                         className="w-fit rounded-lg bg-blue-700 p-2 px-5 hover:brightness-90"
-                        onClick={sendPost}
+                        onClick={() => void sendPost()}
                       >
                         Share
                       </button>

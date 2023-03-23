@@ -1,32 +1,34 @@
 import Image from "next/image";
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { type RouterOutputs, api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 
 type PostsOutput = RouterOutputs["post"]["getAll"][0];
 
 export default function Post({ post }: { post: PostsOutput }) {
-  // const { data: likes } = api.like.getAllFromPost.useQuery({ postId: post.id });
+  const { data: likes } = api.like.getAllFromPost.useQuery({ postId: post.id });
 
-  // const { data: comments } = api.comment.getAllFromPost.useQuery({
-  //   postId: post.id,
-  // });
+  const { data: comments } = api.comment.getAllFromPost.useQuery({
+    postId: post.id,
+  });
 
   const [hasLiked, setHasLiked] = useState(false);
 
-  // const { data: sessionData } = useSession();
+  const { data: sessionData } = useSession();
 
-  // if (sessionData && likes) {
-  //   setHasLiked(() =>
-  //     likes.findIndex((like) => like.userId === sessionData.user.id) !== -1
-  //       ? true
-  //       : false
-  //   );
-  // }
+  useEffect(() => {
+    if (likes) {
+      setHasLiked(
+        likes.findIndex((like) => like.id === sessionData?.user.id) !== -1
+          ? true
+          : false
+      );
+    }
+  }, [likes, sessionData?.user.id]);
 
   return (
-    <div className="flex w-full flex-col ">
+    <div className="flex w-full flex-col pb-10">
       {/* User Info */}
       <div className="flex items-center gap-2 p-2">
         <Image
@@ -62,21 +64,21 @@ export default function Post({ post }: { post: PostsOutput }) {
         <FaRegComment size={24} />
       </div>
       {/* Number of Likes */}
-      {/* {likes && (
+      {likes && (
         <div>
           <p>
             {likes.length} {likes.length <= 1 ? "like" : "likes"}
           </p>
         </div>
-      )} */}
+      )}
       {/* Content */}
       <div className="text-justify">
         <span className="font-bold">{post.name} </span>
         <span className="text-sm">{post.content}</span>
       </div>
       {/* Comments */}
-      {/* {comments && (
-        <div>
+      {comments && (
+        <div className="cursor-pointer text-center">
           {comments.length > 0 && (
             <button>
               Show {comments.length}{" "}
@@ -85,7 +87,8 @@ export default function Post({ post }: { post: PostsOutput }) {
           )}
           {comments.length == 0 && <div>Comment on this post</div>}
         </div>
-      )} */}
+      )}
+      {/* <div className="text-center">Comment on this post</div> */}
     </div>
   );
 }

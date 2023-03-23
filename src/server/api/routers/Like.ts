@@ -21,7 +21,7 @@ export const LikeRouter = createTRPCRouter({
   getAllFromPost: publicProcedure
   .input(z.object({postId: z.string()}))
   .query(async ({ input, ctx }) => {
-    return ctx.prisma.comment.findMany({
+    return ctx.prisma.like.findMany({
       where: {
         postId: input.postId,
       }
