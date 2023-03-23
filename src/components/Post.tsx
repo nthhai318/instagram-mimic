@@ -1,11 +1,30 @@
-import { type FakePost } from "~/fake-data/Insta-posts";
 import Image from "next/image";
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { useState } from "react";
+import { type RouterOutputs, api } from "~/utils/api";
+import { useSession } from "next-auth/react";
 
-export default function Post({ post }: { post: FakePost }) {
-  const [likes, setLikes] = useState([]);
-  const [comments, setComments] = useState([]);
+type PostsOutput = RouterOutputs["post"]["getAll"][0];
+
+export default function Post({ post }: { post: PostsOutput }) {
+  // const { data: likes } = api.like.getAllFromPost.useQuery({ postId: post.id });
+
+  // const { data: comments } = api.comment.getAllFromPost.useQuery({
+  //   postId: post.id,
+  // });
+
+  const [hasLiked, setHasLiked] = useState(false);
+
+  // const { data: sessionData } = useSession();
+
+  // if (sessionData && likes) {
+  //   setHasLiked(() =>
+  //     likes.findIndex((like) => like.userId === sessionData.user.id) !== -1
+  //       ? true
+  //       : false
+  //   );
+  // }
+
   return (
     <div className="flex w-full flex-col ">
       {/* User Info */}
@@ -19,7 +38,13 @@ export default function Post({ post }: { post: FakePost }) {
         />
         <p className="font-bold">{post.name}</p>
         <span>•</span>
-        <p className="text-sm font-thin">{post.createdAt}</p>
+        <p className="text-sm font-thin">
+          {post.createdAt.toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}
+        </p>
       </div>
       {/* Image */}
       <div className="">
@@ -33,31 +58,34 @@ export default function Post({ post }: { post: FakePost }) {
       </div>
       {/* Utilities: Likes/Comment/Share */}
       <div className="my-2 flex items-center gap-6">
-        <FaRegHeart size={24} />
-        <FaHeart size={24} />
+        {!hasLiked ? <FaRegHeart size={24} /> : <FaHeart size={24} />}
         <FaRegComment size={24} />
       </div>
       {/* Number of Likes */}
-      <div>
-        <p>
-          {likes.length} {likes.length <= 1 ? "like" : "likes"}
-        </p>
-      </div>
+      {/* {likes && (
+        <div>
+          <p>
+            {likes.length} {likes.length <= 1 ? "like" : "likes"}
+          </p>
+        </div>
+      )} */}
       {/* Content */}
       <div className="text-justify">
         <span className="font-bold">{post.name} </span>
         <span className="text-sm">{post.content}</span>
       </div>
       {/* Comments */}
-      <div>
-        {comments.length > 0 && (
-          <button>
-            Show {comments.length}{" "}
-            {comments.length > 1 ? "comments" : "comment"}
-          </button>
-        )}
-        {comments.length == 0 && <div>Comment</div>}
-      </div>
+      {/* {comments && (
+        <div>
+          {comments.length > 0 && (
+            <button>
+              Show {comments.length}{" "}
+              {comments.length > 1 ? "comments" : "comment"}
+            </button>
+          )}
+          {comments.length == 0 && <div>Comment on this post</div>}
+        </div>
+      )} */}
     </div>
   );
 }

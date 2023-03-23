@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
 
 export type FakeFriends = {
@@ -14,7 +14,16 @@ export type FakeFriends = {
   nat: string;
 }[];
 
-export default function Friends({ friends }: { friends: FakeFriends }) {
+export default function Friends() {
+  const [friends, setFriends] = useState<FakeFriends>([]);
+
+  useEffect(() => {
+    fetch("api/fakeUser")
+      .then((res) => res.json() as Promise<FakeFriends>)
+      .then((data) => setFriends(data))
+      .catch((err) => console.log(err));
+  }, []);
+
   const ref = useRef<HTMLDivElement>(null);
 
   return (
@@ -23,30 +32,32 @@ export default function Friends({ friends }: { friends: FakeFriends }) {
         ref={ref}
         className="scrollbar-hide  w-full overflow-x-auto scroll-smooth"
       >
-        <div className="flex w-max flex-nowrap gap-4   py-5">
-          {friends.map((user) => (
-            <div key={user.email}>
-              <div className="gradient-border ">
-                <Image
-                  src={user.picture.thumbnail}
-                  width={100}
-                  height={100}
-                  alt={`${user.name.first} ${user.name.last} ava`}
-                  className="h-14 w-14 rounded-full border"
-                />
+        {friends && (
+          <div className="flex w-max flex-nowrap gap-4   py-5">
+            {friends.map((user) => (
+              <div key={user.email}>
+                <div className="gradient-border ">
+                  <Image
+                    src={user.picture.thumbnail}
+                    width={100}
+                    height={100}
+                    alt={`${user.name.first} ${user.name.last} ava`}
+                    className="h-14 w-14 rounded-full border"
+                  />
+                </div>
+                <p className="w-14 break-words text-center text-sm">
+                  {user.name.last}
+                </p>
               </div>
-              <p className="w-14 break-words text-center text-sm">
-                {user.name.last}
-              </p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <button
         onClick={() => {
           if (ref.current) {
-            ref.current.scrollLeft -= 85;
+            ref.current.scrollLeft -= 200;
           }
         }}
         className="absolute top-[60px] left-0 z-10"
@@ -57,7 +68,7 @@ export default function Friends({ friends }: { friends: FakeFriends }) {
       <button
         onClick={() => {
           if (ref.current) {
-            ref.current.scrollLeft += 85;
+            ref.current.scrollLeft += 200;
           }
         }}
         className="absolute right-0 top-[60px] z-10"

@@ -40,10 +40,9 @@ export const PostRouter = createTRPCRouter({
 
   }),
 
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    const results = await ctx.prisma.post.findMany();
-    results.sort((a,b) => a.createdAt > b.createdAt ? -1 : 1)
-    return results;  
+  getAll: publicProcedure
+  .query(async ({ ctx }) => {
+    return ctx.prisma.post.findMany();  
   }),
 
   delete: protectedProcedure

@@ -1,30 +1,18 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { useEffect, useState } from "react";
 import Feed from "~/components/Feed";
-import Friends, { type FakeFriends } from "~/components/Friends";
+import Friends from "~/components/Friends";
 import PostInput from "~/components/PostInput";
-import Suggestions from "~/components/Suggestions";
-import { type FakePost } from "~/fake-data/Insta-posts";
+// import Suggestions from "~/components/Suggestions";
+import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
-  const [friends, setFriends] = useState<FakeFriends>([]);
-  const [posts, setPosts] = useState<FakePost[]>([]);
-
-  useEffect(() => {
-    fetch("api/fakeUser")
-      .then((res) => res.json() as Promise<FakeFriends>)
-      .then((data) => setFriends(data))
-      .catch((err) => console.log(err));
-  }, []);
-
-  useEffect(() => {
-    fetch("api/fakePosts")
-      .then((res) => res.json() as Promise<FakePost[]>)
-      .then((data) => setPosts(data))
-      .catch((err) => console.log(err));
-  }, []);
-
+  const { data: posts, refetch: postsrefetch } =
+    api.post.getAll.useQuery(undefined);
+  const fetchpost = () => postsrefetch();
+  const sortedPosts = posts?.sort((a, b) =>
+    a.createdAt > b.createdAt ? -1 : 1
+  );
   return (
     <>
       <Head>
@@ -37,13 +25,11 @@ const Home: NextPage = () => {
       </Head>
       <div className="flex flex-1 items-start justify-center gap-16 overflow-x-hidden">
         <div className="flex w-full max-w-[630px] flex-col items-center justify-start">
-          {friends && <Friends friends={friends} />}
-          <PostInput />
-          {posts && <Feed posts={posts} />}
+          <Friends />
+          {sortedPosts && <Feed posts={sortedPosts} />}
         </div>
-        <div className="hidden w-[319px] lg:flex">
-          <Suggestions />
-        </div>
+        <div className="hidden w-[319px] lg:flex">{/* <Suggestions /> */}</div>
+        <PostInput postsrefetch={fetchpost} />
       </div>
     </>
   );
