@@ -8,6 +8,7 @@ import "~/styles/globals.css";
 import Layout from "~/components/Layout";
 import { PostInputContext } from "~/components/PostInputContext";
 import { useState } from "react";
+import { AppRouter } from "~/server/api/root";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,

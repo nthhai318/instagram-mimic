@@ -24,7 +24,57 @@ export const PostRouter = createTRPCRouter({
 
   getAll: publicProcedure
   .query(async ({ ctx }) => {
-    return ctx.prisma.post.findMany();  
+    return ctx.prisma.post.findMany({
+      include: {
+        like: {
+          select: {
+            userId: true,
+            id: true,
+          }
+        },
+        comment: {
+          select: {
+            userId: true,
+          }
+        }
+      }
+    });  
+  }),
+
+  getPostById: publicProcedure
+  .input(z.object({postId: z.string()}))
+  .query(({ input, ctx }) => {
+    return ctx.prisma.post.findUnique({
+      where: {
+        id: input.postId,
+      },
+      include: {
+        like: true,
+        comment: true
+      }
+    });  
+  }),
+
+  getPostByUserId: publicProcedure
+  .input(z.object({userId: z.string()}))
+  .query(({ input, ctx }) => {
+    return ctx.prisma.post.findMany({
+      where: {
+        id: input.userId,
+      },
+      include: {
+        like: {
+          select: {
+            userId: true,
+          }
+        },
+        comment: {
+          select: {
+            userId: true,
+          }
+        }
+      }
+    });  
   }),
 
   delete: protectedProcedure

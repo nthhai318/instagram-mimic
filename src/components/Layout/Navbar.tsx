@@ -7,6 +7,7 @@ import { MdOutlineExplore } from "react-icons/md";
 import { CgAddR } from "react-icons/cg";
 import { BiLogInCircle, BiLogOutCircle } from "react-icons/bi";
 import { PostInputContext } from "../PostInputContext";
+import Link from "next/link";
 
 export default function Navbar() {
   const { setPostModalOpen } = useContext(PostInputContext);
@@ -34,8 +35,9 @@ export default function Navbar() {
         </div>
         {/* MENU ITEMS */}
         <div className="flex justify-around gap-6 md:flex-col md:items-center md:py-3 xl:items-start">
-          <MenuItem menu="home" Icon={AiFillHome} />
-
+          <Link className="w-fit cursor-pointer md:flex xl:w-full" href="/">
+            <MenuItem menu="home" Icon={AiFillHome} />
+          </Link>
           <MenuItem menu="Explore" Icon={MdOutlineExplore} />
 
           {sessionData && (

@@ -1,9 +1,8 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Feed from "~/components/Feed";
 import Friends from "~/components/Friends";
+import Post from "~/components/Post";
 import PostInput from "~/components/PostInput";
-// import Suggestions from "~/components/Suggestions";
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
@@ -26,7 +25,15 @@ const Home: NextPage = () => {
       <div className="flex flex-1 items-start justify-center gap-16 overflow-x-hidden">
         <div className="flex w-full max-w-[630px] flex-col items-center justify-start">
           <Friends />
-          {sortedPosts && <Feed posts={sortedPosts} />}
+          {/* Post Feed */}
+          <div className="w-full max-w-[470px] ">
+            <div className="flex flex-col divide-y divide-gray-600">
+              {sortedPosts &&
+                sortedPosts.map((post) => (
+                  <Post key={post.id} fetchpost={() => fetchpost} post={post} />
+                ))}
+            </div>
+          </div>
         </div>
         <div className="hidden w-[319px] lg:flex">{/* <Suggestions /> */}</div>
         <PostInput postsrefetch={fetchpost} />

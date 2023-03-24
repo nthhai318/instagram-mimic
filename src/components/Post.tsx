@@ -1,31 +1,36 @@
 import Image from "next/image";
 import { FaHeart, FaRegComment, FaRegHeart } from "react-icons/fa";
-import { useEffect, useState } from "react";
-import { type RouterOutputs, api } from "~/utils/api";
+import { api, type RouterOutputs } from "~/utils/api";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
-type PostsOutput = RouterOutputs["post"]["getAll"][0];
+type PostOutput = RouterOutputs["post"]["getAll"][0];
 
-export default function Post({ post }: { post: PostsOutput }) {
-  const { data: likes } = api.like.getAllFromPost.useQuery({ postId: post.id });
-
-  const { data: comments } = api.comment.getAllFromPost.useQuery({
-    postId: post.id,
-  });
-
-  const [hasLiked, setHasLiked] = useState(false);
-
+export default function Post({
+  post,
+  fetchpost,
+}: {
+  post: PostOutput;
+  fetchpost: () => void;
+}) {
   const { data: sessionData } = useSession();
 
-  useEffect(() => {
-    if (likes) {
-      setHasLiked(
-        likes.findIndex((like) => like.id === sessionData?.user.id) !== -1
-          ? true
-          : false
-      );
-    }
-  }, [likes, sessionData?.user.id]);
+  const likeId =
+    post.like[
+      post.like.findIndex((like) => like.userId === sessionData?.user.id)
+    ];
+
+  const likePost = api.like.create.useMutation({
+    onSuccess: () => {
+      fetchpost();
+    },
+  });
+
+  const unlikePost = api.like.delete.useMutation({
+    onSuccess: () => {
+      fetchpost();
+    },
+  });
 
   return (
     <div className="flex w-full flex-col pb-10">
@@ -50,45 +55,57 @@ export default function Post({ post }: { post: PostsOutput }) {
       </div>
       {/* Image */}
       <div className="">
-        <Image
-          src={post.image}
-          width={1000}
-          height={1000}
-          alt="content"
-          className="h-auto max-h-[600px] w-full object-cover"
-        />
+        <Link href={`/post/${post.id}`}>
+          <Image
+            src={post.image}
+            width={1000}
+            height={1000}
+            alt="content"
+            className="h-auto max-h-[600px] w-full object-cover"
+          />
+        </Link>
       </div>
-      {/* Utilities: Likes/Comment/Share */}
-      <div className="my-2 flex items-center gap-6">
-        {!hasLiked ? <FaRegHeart size={24} /> : <FaHeart size={24} />}
+
+      {/* Utilities: Likes/Comment */}
+      <div className="mb-2 flex items-center gap-6 p-3">
+        {likeId ? (
+          <FaHeart
+            size={24}
+            onClick={() =>
+              unlikePost.mutate({
+                likeId: likeId.id,
+              })
+            }
+          />
+        ) : (
+          <FaRegHeart
+            size={24}
+            onClick={() => likePost.mutate({ postId: post.id })}
+          />
+        )}
+        {post.like && <p>{post.like.length}</p>}
         <FaRegComment size={24} />
+        <p>{post.comment.length}</p>
       </div>
-      {/* Number of Likes */}
-      {likes && (
-        <div>
-          <p>
-            {likes.length} {likes.length <= 1 ? "like" : "likes"}
-          </p>
-        </div>
-      )}
+
       {/* Content */}
       <div className="text-justify">
         <span className="font-bold">{post.name} </span>
         <span className="text-sm">{post.content}</span>
       </div>
+
       {/* Comments */}
-      {comments && (
+      <Link href={`/post/${post.id}`}>
         <div className="cursor-pointer text-center">
-          {comments.length > 0 && (
-            <button>
-              Show {comments.length}{" "}
-              {comments.length > 1 ? "comments" : "comment"}
-            </button>
+          {post.comment.length == 0 ? (
+            <div>Comment on this post</div>
+          ) : (
+            <div>{`Show ${post.comment.length} ${
+              post.comment.length == 1 ? "comment" : "comments"
+            }`}</div>
           )}
-          {comments.length == 0 && <div>Comment on this post</div>}
         </div>
-      )}
-      {/* <div className="text-center">Comment on this post</div> */}
+      </Link>
     </div>
   );
 }
