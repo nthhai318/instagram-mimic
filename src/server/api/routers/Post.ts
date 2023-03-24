@@ -60,12 +60,13 @@ export const PostRouter = createTRPCRouter({
   .query(({ input, ctx }) => {
     return ctx.prisma.post.findMany({
       where: {
-        id: input.userId,
+        userId: input.userId,
       },
       include: {
         like: {
           select: {
             userId: true,
+            id: true,
           }
         },
         comment: {

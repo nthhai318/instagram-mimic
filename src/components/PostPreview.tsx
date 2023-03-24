@@ -6,7 +6,7 @@ import Link from "next/link";
 
 type PostOutput = RouterOutputs["post"]["getAll"][0];
 
-export default function Post({
+export default function PostPreview({
   post,
   fetchpost,
 }: {

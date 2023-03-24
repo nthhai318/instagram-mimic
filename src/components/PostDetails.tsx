@@ -56,7 +56,7 @@ export default function Post({
   return (
     <div className="h-fit w-full max-w-[1050px] flex-col overflow-hidden rounded-lg bg-zinc-700">
       <div className="flex h-fit w-full flex-col  md:flex-row">
-        <div className="aspect-square flex-1 items-center justify-center">
+        <div className="flflex flex aspect-square items-center justify-center">
           {/* Image */}
           <Image
             src={post.image}

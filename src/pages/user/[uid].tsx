@@ -1,13 +1,25 @@
 import { type NextPage } from "next";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import React from "react";
 import Friends from "~/components/Friends";
-import PostPreview from "~/components/PostPreview";
 import PostInput from "~/components/PostInput";
+import PostPreview from "~/components/PostPreview";
 import { api } from "~/utils/api";
 
-const Home: NextPage = () => {
+export const dynamic = "force-dynamic";
+
+const UserPost: NextPage = () => {
+  const router = useRouter();
+  const { uid } = router.query as { uid: string };
+
+  const { data: sessionData } = useSession();
+
   const { data: posts, refetch: postsrefetch } =
-    api.post.getAll.useQuery(undefined);
+    api.post.getPostByUserId.useQuery({
+      userId: uid,
+    });
 
   const fetchpost = () => postsrefetch();
 
@@ -48,6 +60,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
-
-export const dynamic = "force-dynamic";
+export default UserPost;

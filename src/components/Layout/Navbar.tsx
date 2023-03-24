@@ -49,7 +49,14 @@ export default function Navbar() {
             </div>
           )}
 
-          {sessionData && <UserProfile />}
+          {sessionData && (
+            <Link
+              className="w-fit cursor-pointer md:flex xl:w-full"
+              href={`/user/${sessionData.user.id}`}
+            >
+              <UserProfile />
+            </Link>
+          )}
           {!sessionData ? (
             <div
               className="h-[48px] w-fit cursor-pointer xl:w-full"
