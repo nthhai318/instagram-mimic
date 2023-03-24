@@ -1,4 +1,4 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useContext } from "react";
 import { type IconType } from "react-icons";
@@ -6,11 +6,12 @@ import { AiFillHome } from "react-icons/ai";
 import { MdOutlineExplore } from "react-icons/md";
 import { CgAddR } from "react-icons/cg";
 import { BiLogInCircle, BiLogOutCircle } from "react-icons/bi";
-import { PostInputContext } from "../PostInputContext";
+import { ModalContext } from "../PostInputContext";
 import Link from "next/link";
+import SignInModal from "../SignInModal";
 
 export default function Navbar() {
-  const { setPostModalOpen } = useContext(PostInputContext);
+  const { setPostModalOpen, setLogModalOpen } = useContext(ModalContext);
   const { data: sessionData } = useSession();
 
   return (
@@ -60,7 +61,7 @@ export default function Navbar() {
           {!sessionData ? (
             <div
               className="h-[48px] w-fit cursor-pointer xl:w-full"
-              onClick={() => void signIn("github")}
+              onClick={() => setLogModalOpen(true)}
             >
               <MenuItem menu="Sign in" Icon={BiLogInCircle} />
             </div>
@@ -72,6 +73,7 @@ export default function Navbar() {
               <MenuItem menu="Sign out" Icon={BiLogOutCircle} />
             </div>
           )}
+          <SignInModal />
         </div>
       </div>
     </div>

@@ -6,23 +6,30 @@ import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
 import Layout from "~/components/Layout";
-import { PostInputContext } from "~/components/PostInputContext";
+import { ModalContext } from "~/components/PostInputContext";
 import { useState } from "react";
-import { AppRouter } from "~/server/api/root";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
   const [postModalOpen, setPostModalOpen] = useState(false);
+  const [logModalOpen, setLogModalOpen] = useState(false);
 
   return (
     <SessionProvider session={session}>
-      <PostInputContext.Provider value={{ postModalOpen, setPostModalOpen }}>
+      <ModalContext.Provider
+        value={{
+          postModalOpen,
+          setPostModalOpen,
+          logModalOpen,
+          setLogModalOpen,
+        }}
+      >
         <Layout>
           <Component {...pageProps} />
         </Layout>
-      </PostInputContext.Provider>
+      </ModalContext.Provider>
     </SessionProvider>
   );
 };

@@ -3,7 +3,7 @@ import { type ChangeEvent, useRef, useState, useContext } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { api } from "~/utils/api";
 import Modal from "./Modal";
-import { PostInputContext } from "./PostInputContext";
+import { ModalContext } from "./PostInputContext";
 import { useSession } from "next-auth/react";
 import { type QueryObserverResult } from "@tanstack/react-query";
 import { nanoid } from "nanoid";
@@ -16,7 +16,7 @@ const supabase = createClient(
   `${process.env.NEXT_PUBLIC_SUPABASE_API_KEY}`
 );
 
-export default function PostInput({
+export default function PostInputModal({
   postsrefetch,
 }: {
   postsrefetch: () => Promise<QueryObserverResult>;
@@ -27,7 +27,7 @@ export default function PostInput({
   const [preview, setPreview] = useState<string | null>(null);
   const [input, setInput] = useState<string | null>(null);
   const [finishPost, setFinishPost] = useState(false);
-  const { postModalOpen, setPostModalOpen } = useContext(PostInputContext);
+  const { postModalOpen, setPostModalOpen } = useContext(ModalContext);
 
   const sendPost = async () => {
     if (!img) {

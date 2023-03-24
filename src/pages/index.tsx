@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Friends from "~/components/Friends";
 import PostPreview from "~/components/PostPreview";
-import PostInput from "~/components/PostInput";
+import PostInputModal from "~/components/PostInputModal";
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
@@ -42,12 +42,10 @@ const Home: NextPage = () => {
           </div>
         </div>
         <div className="hidden w-[319px] lg:flex">{/* <Suggestions /> */}</div>
-        <PostInput postsrefetch={fetchpost} />
+        <PostInputModal postsrefetch={fetchpost} />
       </div>
     </>
   );
 };
 
 export default Home;
-
-export const dynamic = "force-dynamic";

@@ -1,11 +1,11 @@
 import Image from "next/image";
 import { useContext } from "react";
-import { PostInputContext } from "../PostInputContext";
+import { ModalContext } from "../PostInputContext";
 import { CgAddR } from "react-icons/cg";
 import { useSession } from "next-auth/react";
 
 export default function Header() {
-  const { setPostModalOpen } = useContext(PostInputContext);
+  const { setPostModalOpen } = useContext(ModalContext);
   const { data: sessionData } = useSession();
   return (
     <div className="flex h-[60px] w-full items-center justify-between bg-zinc-900 px-4">

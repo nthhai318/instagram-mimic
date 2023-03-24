@@ -1,3 +1,4 @@
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -22,6 +23,16 @@ export default function DetailsPost() {
 
   return (
     <>
+      <Head>
+        <title>
+          {loading ? "Loading" : post ? post.content : "Post not found"}
+        </title>
+        <meta
+          name="description"
+          content="Instagram mimic using Nextjs and Supabase"
+        />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <div className="flex w-full flex-col">
         {!post && loading ? (
           <div className="flex h-full w-full items-center justify-center">

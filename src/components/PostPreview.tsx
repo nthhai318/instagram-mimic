@@ -36,14 +36,19 @@ export default function PostPreview({
     <div className="flex w-full flex-col pb-10">
       {/* User Info */}
       <div className="flex items-center gap-2 p-2">
-        <Image
-          src={post.userImg}
-          width={100}
-          height={100}
-          alt={`${post.name} ava`}
-          className="h-10 w-10 rounded-full object-cover"
-        />
-        <p className="font-bold">{post.name}</p>
+        <Link
+          className="flex items-center justify-center gap-2"
+          href={`/user/${post.userId}`}
+        >
+          <Image
+            src={post.userImg}
+            width={100}
+            height={100}
+            alt={`${post.name} ava`}
+            className="h-10 w-10 rounded-full object-cover"
+          />
+          <p className="font-bold">{post.name}</p>
+        </Link>
         <span>•</span>
         <p className="text-sm font-thin">
           {post.createdAt.toLocaleDateString(undefined, {
@@ -96,7 +101,7 @@ export default function PostPreview({
 
       {/* Comments */}
       <Link href={`/post/${post.id}`}>
-        <div className="cursor-pointer text-center">
+        <div className="my-3 cursor-pointer py-2 text-center hover:bg-zinc-500/20">
           {post.comment.length == 0 ? (
             <div>Comment on this post</div>
           ) : (
