@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useContext } from "react";
 import { type IconType } from "react-icons";
 import { AiFillHome } from "react-icons/ai";
-import { MdOutlineExplore } from "react-icons/md";
+// import { MdOutlineExplore } from "react-icons/md";
 import { CgAddR } from "react-icons/cg";
 import { BiLogInCircle, BiLogOutCircle } from "react-icons/bi";
 import { ModalContext } from "../PostInputContext";
@@ -39,7 +39,7 @@ export default function Navbar() {
           <Link className="w-fit cursor-pointer md:flex xl:w-full" href="/">
             <MenuItem menu="home" Icon={AiFillHome} />
           </Link>
-          <MenuItem menu="Explore" Icon={MdOutlineExplore} />
+          {/* <MenuItem menu="Explore" Icon={MdOutlineExplore} /> */}
 
           {sessionData && (
             <div

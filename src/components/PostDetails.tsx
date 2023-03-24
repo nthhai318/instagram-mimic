@@ -99,48 +99,50 @@ export default function Post({
               ))}
             </div>
             {/* Post a comment */}
-            <div className="bg-zinc-800/50 md:order-1">
-              <div className="mb-2 flex items-center gap-6 p-3">
-                {likeId ? (
-                  <FaHeart
-                    size={24}
-                    onClick={() =>
-                      unlikePost.mutate({
-                        likeId: likeId.id,
-                      })
-                    }
-                  />
-                ) : (
-                  <FaRegHeart
-                    size={24}
-                    onClick={() => likePost.mutate({ postId: post.id })}
-                  />
-                )}
-                {post.like && <p>{post.like.length}</p>}
-                <FaRegComment size={24} />
-                <p>{post.comment.length}</p>
+            {sessionData && (
+              <div className="bg-zinc-800/50 md:order-1">
+                <div className="mb-2 flex items-center gap-6 p-3">
+                  {likeId ? (
+                    <FaHeart
+                      size={24}
+                      onClick={() =>
+                        unlikePost.mutate({
+                          likeId: likeId.id,
+                        })
+                      }
+                    />
+                  ) : (
+                    <FaRegHeart
+                      size={24}
+                      onClick={() => likePost.mutate({ postId: post.id })}
+                    />
+                  )}
+                  {post.like && <p>{post.like.length}</p>}
+                  <FaRegComment size={24} />
+                  <p>{post.comment.length}</p>
+                </div>
+                <textarea
+                  placeholder="Write your comment"
+                  className="w-full bg-transparent  p-3 outline-none"
+                  rows={2}
+                  value={comment}
+                  onChange={(e) => {
+                    setComment(e.target.value);
+                    e.target.style.height = "0";
+                    e.target.style.height = `${Math.max(
+                      e.target.scrollHeight,
+                      72
+                    )}px`;
+                  }}
+                />
+                <button
+                  className="w-full rounded-md bg-zinc-600 p-2"
+                  onClick={sendComment}
+                >
+                  Submit comment
+                </button>
               </div>
-              <textarea
-                placeholder="Write your comment"
-                className="w-full bg-transparent  p-3 outline-none"
-                rows={2}
-                value={comment}
-                onChange={(e) => {
-                  setComment(e.target.value);
-                  e.target.style.height = "0";
-                  e.target.style.height = `${Math.max(
-                    e.target.scrollHeight,
-                    72
-                  )}px`;
-                }}
-              />
-              <button
-                className="w-full rounded-md bg-zinc-600 p-2"
-                onClick={sendComment}
-              >
-                Submit comment
-              </button>
-            </div>
+            )}
           </div>
         </div>
       </div>
